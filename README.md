@@ -118,7 +118,7 @@ Variables are stored in an object hashed by name. Currently all variables are st
 While this is effective, it would probably be better to store variables as objects `{var_name: {value: value, scope: scope, const: false}}` for further flexibility and functionality.
 
 System functions are stored in a separate object from variables, but could reasonably be merged.
-System functions are stored in the form {func_name: function(args) {...}}`
+System functions are stored in the form `{func_name: function(args) {...}}`.
 
 ###Array Indices and Hash Keys###
 For simplicity, all variables are directly evaluated for array indices and hash keys directly after the variable name is parsed.
