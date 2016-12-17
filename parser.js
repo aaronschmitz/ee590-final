@@ -2,9 +2,9 @@ Tokenizer = require('./tokenizer.js')
 
 function ParserException(name, pos)
 {
-	this.name = name;
-	this.position = pos;
-	this.toString = function() {
+    this.name = name;
+    this.position = pos;
+    this.toString = function() {
       return this.name + " exception at character " + this.position + " (0-indexed)";
     }
 }
@@ -16,18 +16,18 @@ function Parser(str) {
   this.variables = {true: true, false: false, null: null};
   
   this.functions = {print : function(input) {console.log (input);},
-					string : function(input) {return JSON.stringify(input);}}
+                    string : function(input) {return JSON.stringify(input);}}
 
   this.tokenizer = new Tokenizer();
 
   this.tokenizer
       .add(/\+/)
       .add(/-/)
-	  .add(/\*/)
-	  .add(/\//)
-	  .add(/%/)
-	  .add(/\(/)
-	  .add(/\)/)
+      .add(/\*/)
+      .add(/\//)
+      .add(/%/)
+      .add(/\(/)
+      .add(/\)/)
       .add(/\[/)
       .add(/\]/)
       .add(/\./)
@@ -40,8 +40,8 @@ function Parser(str) {
       .add(/\"(\\.|[^\"])*\"/)
       // Matches all identifiers starting with letter or underscore
       .add(/[a-zA-Z_][a-zA-Z0-9_]*/)
-	  // Second half matches numbers starting with .; first half matches all other floats
-	  .add(/[0-9]+\.?[0-9]*([eE][-+]?[0-9]+)?|\.?[0-9]+([eE][-+]?[0-9]+)?/);
+      // Second half matches numbers starting with .; first half matches all other floats
+      .add(/[0-9]+\.?[0-9]*([eE][-+]?[0-9]+)?|\.?[0-9]+([eE][-+]?[0-9]+)?/);
 
   this.tokenizer.tokenize(this.str);
 }
@@ -57,7 +57,7 @@ Parser.prototype.number = function() {
 
   return num;
 }
-	
+    
 Parser.prototype.array = function() {
   var arr = [];
   var i = 0;
@@ -68,18 +68,18 @@ Parser.prototype.array = function() {
   this.tokenizer.eat();
   while (!this.tokenizer.matches("]"))
   {
-	if (!this.tokenizer.matches(","))
-	{
+    if (!this.tokenizer.matches(","))
+    {
       arr[i] = this.expression();
-	  if (this.tokenizer.matches("]"))
-	  {
+      if (this.tokenizer.matches("]"))
+      {
         break;
-	  }
+      }
       if (!this.tokenizer.matches(","))
-	  {
+      {
         throw new ParserException("Comma expected after array element", this.tokenizer.pos());
-	  }
-	}
+      }
+    }
 
     i++;
     this.tokenizer.eat();
@@ -89,7 +89,7 @@ Parser.prototype.array = function() {
 
   return arr;
 }
-	
+    
 Parser.prototype.hash = function() {
   var hash = {};
   if (!this.tokenizer.matches("{"))
@@ -99,25 +99,25 @@ Parser.prototype.hash = function() {
   this.tokenizer.eat();
   while (!this.tokenizer.matches("}"))
   {
-	var key = this.identifier();
+    var key = this.identifier();
     if (!this.tokenizer.matches(":"))
     {
       throw new ParserException("Colon expected after hash key", this.tokenizer.pos());
-	}
-	this.tokenizer.eat();
+    }
+    this.tokenizer.eat();
 
     hash[key] = this.expression();
-	
+    
     if (this.tokenizer.matches("}"))
-	{
+    {
       break;
-	}
+    }
     if (!this.tokenizer.matches(","))
     {
       throw new ParserException("Comma expected after hash pair", this.tokenizer.pos());
-	}
+    }
 
-	this.tokenizer.eat();
+    this.tokenizer.eat();
   }
 
   this.tokenizer.eat();
@@ -138,19 +138,19 @@ Parser.prototype.string = function() {
   for (var i = 1; i < tmpstr.length - 1; i++)
   {
     if (tmpstr[i] == "\\" && tmpstr[i + 1] == "\"")
-	{
-	  str += "\"";
-	  i++;
-	}
+    {
+      str += "\"";
+      i++;
+    }
     else if (tmpstr[i] == "\\" && tmpstr[i + 1] == "\\")
-	{
-	  str += "\\";
-	  i++;
-	}
+    {
+      str += "\\";
+      i++;
+    }
     else
-	{
-	  str += tmpstr[i];
-	}
+    {
+      str += tmpstr[i];
+    }
   }
 
   return str;
@@ -192,8 +192,8 @@ Parser.prototype.func = function(variable) {
   else
   {
     var value = this.expression();
-	if (!this.tokenizer.matches(")"))
-	{
+    if (!this.tokenizer.matches(")"))
+    {
       throw new ParserException("Expected closing parenthesis after function call", this.tokenizer.pos());
     }
     this.tokenizer.eat();
@@ -208,7 +208,7 @@ Parser.prototype.factor = function() {
   if(this.tokenizer.matches("("))
   {
     this.tokenizer.eat();
-	val = this.expression();
+    val = this.expression();
 
     if ( this.tokenizer.matches(")") )
     {
@@ -217,11 +217,11 @@ Parser.prototype.factor = function() {
       throw new ParserException("Expected closing parenthesis", this.tokenizer.pos());
     }
   } else if (this.tokenizer.matches("+") || this.tokenizer.matches("-")) {
-	var negative = false;
-	if (this.tokenizer.matches("-"))
+    var negative = false;
+    if (this.tokenizer.matches("-"))
     {
       negative = true;
-	}
+    }
     this.tokenizer.eat();
 
     val = this.factor();
@@ -229,11 +229,11 @@ Parser.prototype.factor = function() {
     {
       throw new ParserException("Cannot apply sign to non-number.", this.tokenizer.pos());
     }
-	
+    
     if (negative)
     {
       val = -val;
-	}
+    }
   } else if (this.tokenizer.is_num()) {
     val = this.number();
   } else if (this.tokenizer.is_str()) {
@@ -259,7 +259,7 @@ Parser.prototype.term = function() {
     while (this.tokenizer.matches("*") || this.tokenizer.matches("/") || this.tokenizer.matches("%"))
     {
       var op = this.tokenizer.current();
-	  var pos = this.tokenizer.pos();
+      var pos = this.tokenizer.pos();
       this.tokenizer.eat();
 
       var num = this.factor();
@@ -306,8 +306,8 @@ Parser.prototype.expression = function(first) {
       {
         throw new ParserException("Non-number cannot be subtracted", this.tokenizer.pos());
       }
-	  val -= sub;
-	} else {
+      val -= sub;
+    } else {
       this.tokenizer.eat();
       if (typeof val != "number" && typeof val != "string" && typeof val != "boolean")
       {
@@ -318,7 +318,7 @@ Parser.prototype.expression = function(first) {
       {
         throw new ParserException("Non-number/string cannot be added", this.tokenizer.pos());
       }
-	  val += sub;
+      val += sub;
     }
   }
 
@@ -344,16 +344,16 @@ Parser.prototype.getVariable = function() {
   if (this.tokenizer.matches("["))
   {
     this.tokenizer.eat();
-	key = this.expression();
+    key = this.expression();
     if (!this.tokenizer.matches("]"))
     {
       throw new ParserException("Expected closing square bracket", this.tokenizer.pos());
-	}
+    }
     this.tokenizer.eat();
   } else if (this.tokenizer.matches("."))
   {
     this.tokenizer.eat();
-	key = this.identifier();
+    key = this.identifier();
   }
 
   return {identifier: ident, key: key};
@@ -381,7 +381,7 @@ Parser.prototype.evalVariable = function(variable) {
     {
       throw new ParserException("Undefined index " + variable.key + " in " + variable.identifier, this.tokenizer.pos());
     }
-	throw new ParserException("Undefined key " + variable.key + " in " + variable.identifier, this.tokenizer.pos());
+    throw new ParserException("Undefined key " + variable.key + " in " + variable.identifier, this.tokenizer.pos());
   }
   
   return this.variables[variable.identifier][variable.key];
@@ -395,26 +395,26 @@ Parser.prototype.setVariable = function(variable, value) {
   } else {
     if (typeof variable.key == "number")
     {
-	  if (this.variables[variable.identifier] === undefined)
-	  {
-	    this.variables[variable.identifier] = new Array();
-	  }
-	  if (typeof this.variables[variable.identifier] != "object")
+      if (this.variables[variable.identifier] === undefined)
+      {
+        this.variables[variable.identifier] = new Array();
+      }
+      if (typeof this.variables[variable.identifier] != "object")
       {
         throw new ParserException("Array subscript applied to non-array", this.tokenizer.pos());
-	  }
+      }
       this.variables[variable.identifier][variable.key] = value;
     }
     else if (typeof variable.key == "string")
     {
-	  if (this.variables[variable.identifier] === undefined)
-	  {
-	    this.variables[variable.identifier] = new Object();
-	  }
-	  if (typeof this.variables[variable.identifier] != "object")
+      if (this.variables[variable.identifier] === undefined)
+      {
+        this.variables[variable.identifier] = new Object();
+      }
+      if (typeof this.variables[variable.identifier] != "object")
       {
         throw new ParserException("Object key applied to non-object", this.tokenizer.pos());
-	  }
+      }
       this.variables[variable.identifier][variable.key] = value;
     }
   }
@@ -441,19 +441,19 @@ Parser.prototype.statement = function() {
   else if (this.tokenizer.is_ident())
   {
     var variable = this.getVariable();
-	if (this.tokenizer.matches("="))
+    if (this.tokenizer.matches("="))
     {
       this.tokenizer.eat();
       result = this.expression();
-	  this.setVariable(variable, result);
+      this.setVariable(variable, result);
     }
-	else if (this.tokenizer.matches("("))
-	{
-	  result = this.func(variable);
+    else if (this.tokenizer.matches("("))
+    {
+      result = this.func(variable);
     } else {
       var value = this.evalVariable(variable);
       result = this.expression(value);
-	}
+    }
   }
   else
   {

@@ -73,7 +73,7 @@ Tokenizer.prototype.peek = function() {
   while (peak_index < this.tokens.length)
   {
     if (this.is_ws(this.tokens[peak_index]))
-	{
+    {
       return this.tokens[peak_index];
     }
     peak_index++;
