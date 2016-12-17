@@ -107,10 +107,10 @@ The tokenizer also offers several helpful functions to determine the type of tok
 The terminal tokens are strings, numbers, and variables (note that booleans and null are treated as constant variables).
 The terminal tokens can be used on their own or also form hashes, arrays, and function parameters.
 The rest of the language is pretty straightforward.
-* Factors have strings, numbers, hashes, variables, arrays, functions, or expressions optionally proceeded by one or more unary plus or minus signs where appropriate.
+* Factors have strings, numbers, hashes, variables, arrays, functions, or expressions optionally preceded by one or more unary plus or minus signs where appropriate.
 * Terms have one or more factors separated by multiplication, division, or modulus symbols.
 * Expressions have one or more terms separated by addition and subtraction symbols.
-* Statements have an expression optionally preceeded by an assignment to a variable and followed by a semicolon.
+* Statements have an expression optionally preceded by an assignment to a variable and followed by a semicolon.
 * A program has zero or more statements.
 
 ###Variable and Function Management###
