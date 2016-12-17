@@ -27,8 +27,11 @@ fs.readFile(file, 'ascii', function(err, data) {
    .add(/{/)
    .add(/}/)
    .add(/:/)
-   // Matches all strings with appropriate escaping
+   .add(/,/)
+   // Matches all double-quoted strings with appropriate escaping
    .add(/\"(\\.|[^\"])*\"/)
+   // Matches all single-quoted strings with appropriate escaping
+   .add(/'(\\.|[^'])*'/)
    // Matches all identifiers starting with letter or underscore
    .add(/[a-zA-Z_][a-zA-Z0-9_]*/)
    // Second half matches numbers starting with .; first half matches all other floats

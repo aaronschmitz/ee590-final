@@ -43,6 +43,14 @@ A test file called `test` is provided that excercises all parser functionality i
   Expected:      "abc"
   "\\abc\\":     \abc\
   Expected:      \abc\
+  'abc' + 'def': abcdef
+  Expected:      abcdef
+  'a"bc' + 123:  a"bc123
+  Expected:      a"bc123
+  '\'abc\'':     'abc'
+  Expected:      'abc'
+  '\\abc\\':     \abc\
+  Expected:      \abc\
 *****Test boolean handling*****
   true * true:  1
   Expected:     1
@@ -78,3 +86,21 @@ A test file called `test` is provided that excercises all parser functionality i
   d["hmm mm"]: 8
   Expected:    8
 ```
+
+##Architecture##
+###File IO###
+The first function of the parser is to synchronously read the entire file specified in the first argument into a string.
+This synchronous architecture is inefficient and not particularly well-suited to large programs, but is adequate for the purposes of this project.
+If no first argument is specified, the parser silently attempts to open `test`.
+###Tokenizer###
+The tokenizer uses regular expressions to greedily grab the next token out of the string. The tokenizer first tokenizes any punctionation including '+', '-', '*', '/', '%', '(', ')', '[', ']', '.', '=', ';', '{', '}', ':', and ','.
+Then all single and double quoted strings are tokenized.
+Then identifier (i.e. variable/function) names which may contain only numbers, letters, and underscores and must start with one of the latter two.
+Then integers and floating point numbers are tokenized.
+Then all whitespace is tokenized in contiquous blocks.
+Finally any unidentified tokens are tokenized a character at a time to allow for intelligent error reporting of an unexpected token.
+
+The tokenizers offers a function `next` which advances to the next non-whitespace character
+(all whitespace is ignored by the parser except whitespace dividing tokens or within string literals).
+The tokenizer also offers several helpful functions to determine the type of token such as `is_num`.
+###Recursive Decent Parser###

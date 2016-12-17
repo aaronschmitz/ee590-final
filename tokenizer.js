@@ -108,7 +108,7 @@ Tokenizer.prototype.is_num = function() {
 }
 
 Tokenizer.prototype.is_str = function() {
-  return /^\"(\\.|[^\"])*\"$/.test(this.current());
+  return /^\"(\\.|[^\"])*\"$/.test(this.current()) || /^'(\\.|[^'])*'$/.test(this.current());
 }
 
 Tokenizer.prototype.is_ident = function() {
