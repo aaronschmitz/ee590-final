@@ -216,12 +216,13 @@ Parser.prototype.factor = function() {
   if(this.tokenizer.matches("("))
   {
     this.tokenizer.eat();
-    val = this.expression();
+    val = this.statement();
 
     if ( this.tokenizer.matches(")") )
     {
       this.tokenizer.eat();
     } else {
+		console.log(this.tokenizer.current());
       throw new ParserException("Expected closing parenthesis", this.tokenizer.pos());
     }
   } else if (this.tokenizer.matches("+") || this.tokenizer.matches("-")) {
@@ -259,8 +260,14 @@ Parser.prototype.factor = function() {
   return val;
 }
 
-Parser.prototype.term = function() {
-  var val = this.factor();
+Parser.prototype.term = function(first) {
+  var val;
+
+  if (first !== undefined) {
+    val = first;
+  } else {
+    val = this.factor();
+  }
 
   if (typeof val == "number" || typeof val == "boolean")
   {
@@ -291,14 +298,9 @@ Parser.prototype.term = function() {
 }
 
 Parser.prototype.expression = function(first) {
-  
-  var val;
-  if (first !== undefined) {
-    val = first;
-  } else {
-    val = this.term();
-  }
-  
+
+  var val = this.term(first);
+
   while (this.tokenizer.matches("+") || this.tokenizer.matches("-"))
   {
     var negative = false;
@@ -468,16 +470,9 @@ Parser.prototype.statement = function() {
     result = this.expression(value);
   }
 
-  if (!this.tokenizer.matches(";"))
-  {
-    throw new ParserException("Expected semicolon to end statement", this.tokenizer.pos());
-  }
-
-  this.tokenizer.eat();
-
   //console.log(result);
 
-  return;
+  return result;
 }
 
 Parser.prototype.parse = function() {
@@ -485,7 +480,17 @@ Parser.prototype.parse = function() {
 
   while (!this.tokenizer.eof())
   {
-    this.statement();
+    if (!this.tokenizer.matches(";"))
+    {
+      this.statement();
+    }
+
+    if (!this.tokenizer.matches(";"))
+    {
+      throw new ParserException("Expected semicolon to end statement", this.tokenizer.pos());
+    }
+
+    this.tokenizer.eat();
   }
 
   //console.log(this.variables);
