@@ -104,3 +104,24 @@ The tokenizers offers a function `next` which advances to the next non-whitespac
 (all whitespace is ignored by the parser except whitespace dividing tokens or within string literals).
 The tokenizer also offers several helpful functions to determine the type of token such as `is_num`.
 ###Recursive Decent Parser###
+The terminal tokens are strings, numbers, and variables (note that booleans and null are treated as constant variables).
+The terminal tokens can be used on their own or also form hashes, arrays, and function parameters.
+The rest of the language is pretty straightforward.
+* Factors have strings, numbers, hashes, variables, arrays, functions, or expressions optionally proceeded by one or more unary plus or minus signs where appropriate.
+* Terms have one or more factors separated by multiplication, division, or modulus symbols.
+* Expressions have one or more terms separated by addition and subtraction symbols.
+* Statements have an expression optionally preceeded by an assignment to a variable and followed by a semicolon.
+* A program has zero or more statements.
+
+###Variable and Function Management###
+Variables are stored in an object hashed by name. Currently all variables are stored directly as `{var_name: value}`.
+While this is effective, it would probably be better to store variables as objects `{var_name: {value: value, scope: scope, const: false}}` for further flexibility and functionality.
+
+System functions are stored in a separate object from variables, but could reasonably be merged.
+System functions are stored in the form {func_name: function(args) {...}}`
+
+###Array Indices and Hash Keys###
+For simplicity, all variables are directly evaluated for array indices and hash keys directly after the variable name is parsed.
+This has a couple drawbacks: 2-dimensional arrays such as `A[i][j]` and nested objects such as `X.key1.key2` are not supported.
+Also otherwise valid javascript where the indices are applied directly to an object such as `[0,1,2][0]` or `{a:1}.a` or even `(var).key` don't parse.
+I plan to correct this shortcoming eventually, but current design seems adequate to meet project requirements.
